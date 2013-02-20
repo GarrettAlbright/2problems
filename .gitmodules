@@ -4,6 +4,3 @@
 [submodule "underscore"]
 	path = underscore
 	url = git://github.com/documentcloud/underscore.git
-[submodule "jquery"]
-	path = jquery
-	url = git://github.com/jquery/jquery.git
