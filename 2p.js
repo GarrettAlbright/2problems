@@ -7,12 +7,12 @@ $(document).ready(function() {
         'order': testers.nextOrderVal(),
         'pattern': '',
         'testText': '',
+        'matches': null,
       };
     },
     // Store the compiled pattern.
     'compiledPattern': null,
     // Store matches.
-    'matches': new Array,
     // Parse the pattern string and compile the pattern. Returns true or false
     // based on success of the new pattern compilation.
     'compilePattern': function(pattern) {
@@ -23,7 +23,7 @@ $(document).ready(function() {
         patternParts = pattern.match(patternPattern);
       // If we're building a new pattern, we want to flush the old match
       // results.
-      this.matches = new Array;
+      this.set('matches', null);
       try {
         this.compiledPattern = new RegExp(patternParts[1], patternParts[2]);
       }
@@ -35,8 +35,7 @@ $(document).ready(function() {
     },
     // Run our compiled pattern against text and store the results.
     'executePattern': function(haystack) {
-      this.matches = haystack.match(this.compiledPattern);
-      console.log(this.matches);
+      this.set('matches', haystack.match(this.compiledPattern));
     }
   });
   
@@ -63,15 +62,36 @@ $(document).ready(function() {
       this.$el.html(this.template(this.model.toJSON()));
       return this;
     },
+    'renderMatches': function() {
+      var results = this.model.get('matches');
+      // Note that String.match() returns null instead of just an empty array
+      // in the case of no matches.
+      if (this.model.get('compiledPattern') === null) {
+        var $results = $('<div>').addClass('error').text('(invalid pattern)');
+      }
+      else if (results === null) {
+        var $results = $('<div>').text('(no matches)');
+      }
+      else {
+        var $results = $('<ol>');
+        _.each(results, function(result) {
+          $results.append($('<li>').text(result));
+        });
+      }
+      $('.results', this.$el).empty().append($results);
+    },
     'sendPattern': function() {
       var patternText = $('.pattern', this.$el).val();
+      this.model.set('pattern', patternText);
       if (patternText && this.model.compilePattern(patternText)) {
         this.sendHaystack();
       }
     },
     'sendHaystack': function() {
-      this.model.executePattern($('.haystack', this.$el).val());
-      // Get results and build list here.
+      var haystack = $('.haystack', this.$el).val();
+      this.model.set('testText', haystack);
+      this.model.executePattern(haystack);
+      this.renderMatches();
     }
   });
 
