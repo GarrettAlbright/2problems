@@ -63,27 +63,42 @@ $(document).ready(function() {
       return this;
     },
     'renderMatches': function() {
-      var results = this.model.get('matches');
-      // Note that String.match() returns null instead of just an empty array
-      // in the case of no matches.
-      if (this.model.get('compiledPattern') === null) {
-        var $results = $('<div>').addClass('error').text('(invalid pattern)');
+      var results = this.model.get('matches'),
+        $resultsRegion = $('.results', this.$el);
+      // Remove things in the results region that aren't the header.
+      $(':not(h2)', $resultsRegion).remove();
+      // Don't put anything in the region if the pattern field is just an empty
+      // string.
+      if (this.model.get('pattern')) {
+        // Note that String.match() returns null instead of just an empty array
+        // in the case of no matches.
+        if (this.model.compiledPattern === null) {
+          var $results = $('<div>').addClass('error').text('(invalid pattern)');
+        }
+        else if (results === null) {
+          var $results = $('<div>').text('(no matches)');
+        }
+        else {
+          var $results = $('<ol>');
+          _.each(results, function(result) {
+            $results.append($('<li>').text(result));
+          });
+        }
+        $resultsRegion.append($results);
       }
-      else if (results === null) {
-        var $results = $('<div>').text('(no matches)');
-      }
-      else {
-        var $results = $('<ol>');
-        _.each(results, function(result) {
-          $results.append($('<li>').text(result));
-        });
-      }
-      $('.results', this.$el).empty().append($results);
     },
     'sendPattern': function() {
       var patternText = $('.pattern', this.$el).val();
       this.model.set('pattern', patternText);
-      if (patternText && this.model.compilePattern(patternText)) {
+      if (!patternText || !this.model.compilePattern(patternText)) {
+        // We don't have a pattern to compile, or compilation failed. Skip
+        // sending the haystack and jump directly to  renderMatches(), which
+        // will show an error if necessary.
+        this.renderMatches();
+      }
+      else {
+        // Send the haystack. Subsequently, the matches will be show in the
+        // results area for this tester.
         this.sendHaystack();
       }
     },
