@@ -3,13 +3,15 @@ $(document).ready(function() {
   // Tester model.
   var TesterModel = Backbone.Model.extend({
     'defaults': function() {
+      var order_id = testers.nextOrderVal();
       return {
-        'order': testers.nextOrderVal(),
+        'id': order_id,
+        'order': order_id,
         'pattern': '',
         'testText': '',
-        'matches': null,
       };
     },
+    'matches': null,
     // Store the compiled pattern.
     'compiledPattern': null,
     // Store matches.
@@ -23,7 +25,7 @@ $(document).ready(function() {
         patternParts = pattern.match(patternPattern);
       // If we're building a new pattern, we want to flush the old match
       // results.
-      this.set('matches', null);
+      this.matches = null;
       try {
         this.compiledPattern = new RegExp(patternParts[1], patternParts[2]);
       }
@@ -35,7 +37,7 @@ $(document).ready(function() {
     },
     // Run our compiled pattern against text and store the results.
     'executePattern': function(haystack) {
-      this.set('matches', haystack.match(this.compiledPattern));
+      this.matches = haystack.match(this.compiledPattern);
     }
   });
   
@@ -43,12 +45,14 @@ $(document).ready(function() {
   var TesterCollection = Backbone.Collection.extend({
     'model': TesterModel,
     'nextOrderVal': function () {
-      return this.length ? this.last().get('order') + 1 : 0;
-    }
+      return this.length ? this.last().get('id') + 1 : 0;
+    },
+    'localStorage': new Backbone.LocalStorage('2problems-dot-com')
   })
   
   // Instantiate a collection.
   var testers = new TesterCollection;
+  testers.fetch();
   
   // View for testers. Uses a "template" in the HTML.
   var TesterView = Backbone.View.extend({
@@ -63,7 +67,7 @@ $(document).ready(function() {
       return this;
     },
     'renderMatches': function() {
-      var results = this.model.get('matches'),
+      var results = this.model.matches,
         $resultsRegion = $('.results', this.$el);
       // Remove things in the results region that aren't the header.
       $(':not(h2)', $resultsRegion).remove();
@@ -94,6 +98,7 @@ $(document).ready(function() {
         // We don't have a pattern to compile, or compilation failed. Skip
         // sending the haystack and jump directly to  renderMatches(), which
         // will show an error if necessary.
+        this.model.save();
         this.renderMatches();
       }
       else {
@@ -107,6 +112,7 @@ $(document).ready(function() {
       this.model.set('testText', haystack);
       this.model.executePattern(haystack);
       this.renderMatches();
+      this.model.save();
     }
   });
 
@@ -114,10 +120,12 @@ $(document).ready(function() {
   var TwoPView = Backbone.View.extend({
     'el': $('#main'),
     'initialize': function() {
-      // @todo Check for pre-existing saved terms and put them in here.
-      // For now we just create a blank tester.
-      var blankTester = new TesterModel();
-      testers.push(blankTester);
+      if (testers.length === 0) {
+        // No testers were loaded, so create a blank one and push it into the
+        // collection.
+        var blankTester = new TesterModel();
+        testers.push(blankTester);
+      }
     },
     'render': function() {
       testers.each(function(tester) {
