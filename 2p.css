@@ -1,0 +1,49 @@
+body {
+  margin: 0;
+}
+
+header, section#main {
+  padding: 5px;
+}
+
+section#main {
+  margin-left: 0px;
+  margin-right: 330px;
+}
+
+section#main div.field-wrapper {
+/*   padding: 3px; */
+}
+
+section#main input, section#main textarea {
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box;         /* Opera/IE 8+ */
+}
+
+section#main input.pattern {
+  width: 100%;
+}
+
+
+section#main textarea.haystack {
+  width: 75%;
+  float: left;
+}
+
+section#main section.results {
+  width: 25%;
+  float: right;
+}
+
+header {
+  width: 320px;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+header h1, header h2, header h3 {
+  text-align: center;
+  font-style: italic;
+}

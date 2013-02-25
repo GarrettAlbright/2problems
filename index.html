@@ -4,7 +4,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <title>Now you have two problems.</title>
   <meta name="description" content="JavaScript-powered regular expression tester." />
-<!--     <link rel="stylesheet" type="text/css" href="css/2p.css" /> -->
+  <link rel="stylesheet" type="text/css" href="2p.css" />
   <script type="text/javascript" src="underscore/underscore.js"></script>
   <script type="text/javascript" src="jquery/jquery-1.9.1.js"></script>
   <script type="text/javascript" src="backbone/backbone.js"></script>
@@ -15,17 +15,20 @@
   <section id="main">
       <p id="third-problem">Actually, you have three problems, because if you can see this long enough to read to the end, then it means that your browser does not support JavaScript or has its JavaScript support disabled, and/or your internet connection is ridiculously slow. You&rsquo;ll have to solve this problem before you can continue.</p>
   </section>
-  <footer>
-  </footer>
+  <header>
+    <h1>Now you have two problems.</h1>
+    <h2>JavaScript-powered regular expression tester</h2>
+    <h3>By <a href="http://abweb.us/">Garrett Albright</a></h3>
+  </header>
   <script type="text/template" id="tester-t">
     <article id="tester-<%= order %>">
       <form novalidate>
         <input type="text" class="pattern" placeholder="/RegEx pattern/" value="<%= pattern %>" />
         <textarea class="haystack" placeholder="Text to match against"><%= testText %></textarea>
+        <section class="field-wrapper results">
+          <h2>Results</h2>
+        </section>
       </form>
-      <section class="results">
-        <h2>Results</h2>
-      </section>
     </article>
   </script>
 </body>
