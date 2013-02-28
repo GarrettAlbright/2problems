@@ -58,12 +58,20 @@ $(document).ready(function() {
   var TesterView = Backbone.View.extend({
     'tagName': 'article',
     'template': _.template($('#tester-t').html()),
+    'initialize': function() {
+      // If we're coming into existence but our model has a pattern, try running
+      // it. This happens when the testers collection loads previously-saved
+      // testers from localstorage.
+    },
     'events': {
       'keyup .pattern': 'sendPattern',
       'keyup .haystack': 'sendHaystack'
     },
     'render': function() {
       this.$el.html(this.template(this.model.toJSON()));
+      if (this.model.get('pattern') !== undefined) {
+        this.sendPattern();
+      }
       return this;
     },
     'renderMatches': function() {
@@ -92,13 +100,17 @@ $(document).ready(function() {
       }
     },
     'sendPattern': function() {
+      // @todo We probably want to re-engineer this so that sending the pattern
+      // to the model and trying to complile it are two seperate operations, as
+      // we actually want to do the latter without doing the former when
+      // instantiatng from localStorage.
       var patternText = $('.pattern', this.$el).val();
       this.model.set('pattern', patternText);
       if (!patternText || !this.model.compilePattern(patternText)) {
         // We don't have a pattern to compile, or compilation failed. Skip
         // sending the haystack and jump directly to  renderMatches(), which
         // will show an error if necessary.
-        this.model.save();
+        this.model.save({'pattern': patternText});
         this.renderMatches();
       }
       else {
@@ -112,7 +124,7 @@ $(document).ready(function() {
       this.model.set('testText', haystack);
       this.model.executePattern(haystack);
       this.renderMatches();
-      this.model.save();
+      this.model.save({'testText': haystack});
     }
   });
 
@@ -126,6 +138,7 @@ $(document).ready(function() {
         var blankTester = new TesterModel();
         testers.push(blankTester);
       }
+      
     },
     'render': function() {
       testers.each(function(tester) {
