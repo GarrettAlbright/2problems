@@ -67,6 +67,7 @@ $(document).ready(function() {
       'keyup .pattern': 'sendPattern',
       'keyup .haystack': 'sendHaystack',
       'click .copy': 'cloneSelf',
+      'click .close': 'closeSelf'
     },
     'render': function() {
       this.$el.html(this.template(this.model.toJSON()));
@@ -130,6 +131,10 @@ $(document).ready(function() {
     'cloneSelf': function() {
       var tester = new TesterModel({'pattern': this.model.get('pattern'), 'testText': this.model.get('testText')});
       testers.push(tester);
+    },
+    'closeSelf': function() {
+      this.$el.remove();
+      this.model.destroy();
     }
   });
 
