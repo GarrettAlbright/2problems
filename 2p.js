@@ -1,3 +1,18 @@
+var testerPresets = {
+  'blank': {},
+  'email': {
+    // Note that backslashes have to be escaped by backslashes…
+    'pattern': '/\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b/ig',
+    // Note that it appears we can't have literal line breaks in JavaScript
+    // strings; hence the \n mess below.
+    'testText': "This pattern matches email addresses. It was culled from Jan Goyvaerts\' wonderful Regular-Expressions.info site, as found on  http://www.regular-expressions.info/email.html , so all credit to him. Though it is not the official pattern to match email addresses, it is far simpler while still broad enough to work nearly all the time. Here\'s some test email addresses to match or not match:\n\nalbright@abweb.us\nbillg@microsoft.com\nfoo@example..org\ntcook@apple.com\ntesting@subdomain.example.net\nfailure@example\n\nHere\'s an example of an email address which will fail with this pattern, even though it\'s technically correct:\ninfo@about.museum"
+  },
+  'non-ascii': {
+    'pattern': '/[^\\x00-\\x7f]+/g',
+    'testText': "&#12371;&#12435;&#12395;&#12385;&#12399;&#65281; This pattern will find contiguous lengths of non-ASCII characters, including heavy metal &uuml;mlauts. Note that it won\'t catch tricky non-printable but legal ASCII characters such as the bell or escape characters, though. C\'est la vie. &iquest;Podemos ir a las monta&ntilde;as?"
+  }
+}
+
 $(document).ready(function() {
 
   // Tester model.
@@ -141,6 +156,9 @@ $(document).ready(function() {
   // The "app" view.
   var TwoPView = Backbone.View.extend({
     'el': $('#main'),
+    'events': {
+      'click footer input#add': 'addTester'
+    },
     'initialize': function() {
       if (testers.length === 0) {
         // No testers were loaded, so create a blank one and push it into the
@@ -154,14 +172,19 @@ $(document).ready(function() {
       testers.each(function(tester) {
         var view = new TesterView({'model': tester});
         // "This" is the window…?
-        this.$('#main').append(view.render().el);
+        this.$('#main footer').before(view.render().el);
       });
       // Remove the "No JS" warning.
       this.$('#third-problem').remove();
     },
     'addOne': function(tester) {
       var view = new TesterView({'model': tester});
-      this.$el.append(view.render().el);
+      this.$('footer').before(view.render().el);
+    },
+    'addTester': function() {
+      var testerPresetName = this.$('footer select#new-type').val(),
+        newTester = new TesterModel(testerPresets[testerPresetName]);
+      testers.push(newTester);
     }
   });
   
