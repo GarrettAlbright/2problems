@@ -172,6 +172,8 @@ $(document).ready(function() {
       });
       // Remove the "No JS" warning.
       this.$('#third-problem').remove();
+      // Show the footer.
+      this.$('footer').show();
     },
     'addOne': function(tester) {
       var view = new TesterView({'model': tester});
