@@ -73,11 +73,6 @@ $(document).ready(function() {
   var TesterView = Backbone.View.extend({
     'tagName': 'article',
     'template': _.template($('#tester-t').html()),
-    'initialize': function() {
-      // If we're coming into existence but our model has a pattern, try running
-      // it. This happens when the testers collection loads previously-saved
-      // testers from localstorage.
-    },
     'events': {
       'keyup .pattern': 'sendPattern',
       'keyup .haystack': 'sendHaystack',
@@ -86,6 +81,7 @@ $(document).ready(function() {
     },
     'render': function() {
       this.$el.html(this.template(this.model.toJSON()));
+      this.$el.attr({'id': 'tester-' + this.model.id, 'class': 'tester'});
       if (this.model.get('pattern') !== undefined) {
         this.sendPattern();
       }

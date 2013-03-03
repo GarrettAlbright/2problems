@@ -36,19 +36,17 @@
     <h3>By <a href="http://abweb.us/">Garrett Albright</a></h3>
   </header>
   <script type="text/template" id="tester-t">
-    <article id="tester-<%= order %>" class="tester">
-      <div class="buttons">
-        <div class="close" title="Remove tester">&times;</div>
-        <div class="copy" title="Fork (clone) tester">&#8916;</div>
-      </div>
-      <form novalidate>
-        <input type="text" class="pattern" placeholder="/RegEx pattern/" value="<%= pattern %>" />
-        <textarea class="haystack" placeholder="Text to match against"><%= testText %></textarea>
-        <section class="field-wrapper results">
-          <h2>Results</h2>
-        </section>
-      </form>
-    </article>
+    <div class="buttons">
+      <div class="close" title="Remove tester">&times;</div>
+      <div class="copy" title="Fork (clone) tester">&#8916;</div>
+    </div>
+    <form novalidate>
+      <input type="text" class="pattern" placeholder="/RegEx pattern/" value="<%= pattern %>" />
+      <textarea class="haystack" placeholder="Text to match against"><%= testText %></textarea>
+      <section class="field-wrapper results">
+        <h2>Results</h2>
+      </section>
+    </form>
   </script>
 </body>
 </html>
