@@ -65,7 +65,8 @@ $(document).ready(function() {
     },
     'events': {
       'keyup .pattern': 'sendPattern',
-      'keyup .haystack': 'sendHaystack'
+      'keyup .haystack': 'sendHaystack',
+      'click .copy': 'cloneSelf',
     },
     'render': function() {
       this.$el.html(this.template(this.model.toJSON()));
@@ -125,6 +126,10 @@ $(document).ready(function() {
       this.model.executePattern(haystack);
       this.renderMatches();
       this.model.save({'testText': haystack});
+    },
+    'cloneSelf': function() {
+      var tester = new TesterModel({'pattern': this.model.get('pattern'), 'testText': this.model.get('testText')});
+      testers.push(tester);
     }
   });
 
@@ -138,7 +143,7 @@ $(document).ready(function() {
         var blankTester = new TesterModel();
         testers.push(blankTester);
       }
-      
+      this.listenTo(testers, 'add', this.addOne);
     },
     'render': function() {
       testers.each(function(tester) {
@@ -148,6 +153,10 @@ $(document).ready(function() {
       });
       // Remove the "No JS" warning.
       this.$('#third-problem').remove();
+    },
+    'addOne': function(tester) {
+      var view = new TesterView({'model': tester});
+      this.$el.append(view.render().el);
     }
   });
   
