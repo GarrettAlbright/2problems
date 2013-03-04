@@ -30,10 +30,31 @@
       <input type="button" id="add" value="+" />
     </footer>
   </section>
-  <header>
+  <header id="about">
+    <div class="buttons">
+      <div class="close toggle-about" title="Close About text">&times;</div>
+    </div>
     <h1>Now you have two problems.</h1>
     <h2>JavaScript-powered regular expression tester</h2>
     <h3>By <a href="http://abweb.us/">Garrett Albright</a></h3>
+    <h4><a href="#about" class="toggle-about" id="open-about">About</a><a href="#about" id="close-about" class="toggle-about">Back to testers</a> &middot;  <a href="https://github.com/GarrettAlbright/2problems">Get the code</a></h4>
+    <article>
+      <h3>What the heck is this?!</h3>
+      <p><em>Now you have two problems</em> is a simple and somewhat ugly site intended to allow programmers to quickly and easily test <a href="http://en.wikipedia.org/wiki/Regular_expression">regular expressions</a> as they craft them. It probably won&rsquo;t be of much interest to people who don&rsquo;t understand what regular expressions are and why they're useful. It is somewhat inspired by a similar site called <a href="http://rubular.com/">Rubular</a>, but works quite differently.</p>
+      <h3 id="waeome"><em>Two problems</em> is waeome! How can I repay you?</h3>
+      <p>I&rsquo;m not accepting any donations, but I bet your local blood bank is. Have you donated blood recently? Why not take a few minutes out of your day to <a href="http://www.aabb.org/Content/Donate_Blood/Why_Donate/whydonate.htm">become a superhero</a>?</p>
+      <h3 id="name">What does the name mean?</h3>
+      <p>An oft-quoted quip in the world of programming goes something like this: &ldquo;Sometimes you have a problem, and you decide to solve it with regular expressions. Now you have <em>two</em> problems.&rdquo; <a href="http://regex.info/blog/2006-09-15/247">Check out this article</a> for more information about this phrase and its origins.</p>
+      <h3 id="privacy">How does <em>Two problems</em> remember my patterns? What personal info is it storing about me?</h3>
+      <p>When you navigate away from <em>Two problems,</em> the site uses the new <a href="http://dev.w3.org/html5/webstorage/">local web storage</a> feature of HTML5 to remember the patterns you were working on (if your browser supports it). This info is stored on your local computer in much the same way as a <a href="http://en.wikipedia.org/wiki/HTTP_cookie">browser cookie</a>. When you return to the site, <em>Two problems</em> using this data to create testers using your data. This information is never sent to the <em>Two problems</em> server, and is inaccessible by any other server on the internet (browser flaws notwithstanding).</p>
+      <h3 id="code">Can I hack the code?</h3>
+      <p>Sure; it&rsquo;s available under a Simplified BSD license. However, some of the libraries will be under differnt licenses. <a href="https://github.com/GarrettAlbright/2problems">Here&rsquo;s the GitHub profile</a>.</p>
+      <h3 id="issue">I see a bug! I have a suggestion!</h3>
+      <p>Please use the <a href="https://github.com/GarrettAlbright/2problems/issues">issue queue on this project&rsquo;s GitHub profile</a>.</p>
+      <h3 id="copyright">Give me some legal crap.</h3>
+      <p>Okay. <em>Two problems</em> is &copy; 2010-2013 Garrett Albright. <em>Two problems</em> is entirely free to use as a service. I hate gratuitous advertising and invasive user tracking as much as you do, so this site features no advertisements and no personal identification is collected or tracked on this site, save for user agent strings and IP addresses as is standard for standard web server logging. I hope you find <em>Two problems</em> useful.</p>
+      <p><a href="#about" class="toggle-about">Back to testers</a></p>
+    </article>
   </header>
   <script type="text/template" id="tester-t">
     <div class="buttons">

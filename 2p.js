@@ -163,6 +163,17 @@ $(document).ready(function() {
         testers.push(blankTester);
       }
       this.listenTo(testers, 'add', this.addOne);
+      
+      $('.toggle-about').click(function() {
+        if ($('body').hasClass('header-open')) {
+          $('body').removeClass('header-open');
+          $('header #open-about').text('About');
+        }
+        else {
+          $('body').addClass('header-open');
+          $('header #open-about').text('Close about text');          
+        }
+      });
     },
     'render': function() {
       testers.each(function(tester) {

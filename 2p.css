@@ -4,7 +4,7 @@ body {
   font-size: smaller;
 }
 
-body, input, textarea, select {
+body, input, textarea, select, header {
   color: white;
   background-color: black;  
 }
@@ -68,57 +68,94 @@ header {
   top: 0;
 }
 
-section#main footer {
+header .buttons {
+  display: none;
+  left: 5px;
+  top: 5px;
+}
+
+header #close-about {
+  display: none;
+}
+
+header article {
+  display: none;
+}
+
+.header-open header {
+  width: auto;
+}
+
+.header-open header #close-about {
+  display: inline;
+}
+.header-open header #open-about {
+  display: none;
+}
+
+.header-open header .buttons {
+  display: block;
+}
+
+.header-open header article {
+  display: block;
+}
+
+.header-open section#main {
+  display: none;
+}
+
+#main footer {
   display: none;
   text-align: right;
   margin-top: 1em;
 }
 
-header h1, header h2, header h3 {
+header h1, header h2, header h3, header h4 {
   text-align: center;
   font-style: italic;
 }
 
-article.tester {
+#main article.tester {
   position: relative;
   margin-bottom: .5em;
 }
 
-article.tester form {
+#main article.tester form {
   background-color: #333;
   overflow: auto;
   padding: 1em .25em .25em .25em;
 }
 
-article.tester:nth-of-type(even) form {
+#main article.tester:nth-of-type(even) form {
   background-color: #444;
 }
 
-article.tester form input, article.tester form textarea {
+#main article.tester form input, article.tester form textarea {
   border: gray 1px solid;
 }
 
-article div.buttons {
+.buttons {
   position: absolute;
   font-size: larger;
   left: -.25em;
   top: -.25em;
 }
 
-article div.buttons div {
+.buttons div {
   line-height: 1.2em;
   float: left;
   padding: 0 .25em;
   background-color: #666;
 }
 
-article div.buttons div:hover {
+.buttons div:hover {
   cursor: pointer;
   color: black;
   background-color: white;
 }
 
-article div.buttons div.close:hover {
+.buttons div.close:hover {
   color: white;
   background-color: red;
 }
