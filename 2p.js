@@ -93,6 +93,7 @@ $(document).ready(function() {
       if (this.model.get('pattern') !== undefined) {
         this.sendPattern();
       }
+      this.$el.slideDown();
       return this;
     },
     'renderMatches': function() {
@@ -152,8 +153,8 @@ $(document).ready(function() {
       testers.push(tester);
     },
     'closeSelf': function() {
-      this.$el.remove();
       this.model.destroy();
+      this.$el.slideUp();
     }
   });
 
