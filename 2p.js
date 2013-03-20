@@ -10,6 +10,14 @@ var testerPresets = {
   'non-ascii': {
     'pattern': '/[^\\x00-\\x7f]+/g',
     'testText': "&#12371;&#12435;&#12395;&#12385;&#12399;&#65281; This pattern will find contiguous lengths of non-ASCII characters, including heavy metal &uuml;mlauts. Note that it won\'t catch tricky non-printable but legal ASCII characters such as the bell or escape characters, though. C\'est la vie. &iquest;Podemos ir a las monta&ntilde;as?"
+  },
+  'na-tel': {
+    'pattern': '/(\\(\\d{3}\\)|\\b\\d{3})[- ]?\\d{3}[- ]?\\d{4}\\b/g',
+    'testText': "This pattern is designed to extract North American telephone numbers (with area codes) in various common formats.\n505-555-4567, (707) 555-1234, 759 555 7890, 8185554860\nNot-so-common but still not quite nonsense:\n(505)555-4567, (423)5559999, 123-5557891\n\nHere's some bad numbers which shouldn't match.\n(555) 555 123, 555 1235, 5555-1236, (123) 555-12345, (1234) 555-9984"
+  },
+  'repeating': {
+    'pattern': '/(\\w)(\\1+)/g',
+    'testText': "Welcome to 2problems.com, the friendly JavaScript-powered regular expression tester! Now you have two problems…\n\nRegular expressions are a powerful tool for programmers for finding bits of text inside of other text. For example, the pattern in the field above finds sequences of two or more repeated letters that appear in this text. (If you aren't a programmer, you probably won't find regular expressions, or this site, very useful.) Isn't it cooooooooooool? :)\n\nTo test an expression of your own, change the pattern in the field above, or use the \"New tester\" menu below to add a new tester to the page. For more info about 2problems.com, click the \"About\" link in the sidebar to the right."
   }
 }
 
