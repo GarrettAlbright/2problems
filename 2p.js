@@ -165,10 +165,10 @@ $(document).ready(function() {
     },
     'initialize': function() {
       if (testers.length === 0) {
-        // No testers were loaded, so create a blank one and push it into the
-        // collection.
-        var blankTester = new TesterModel();
-        testers.push(blankTester);
+        // No testers were loaded, so create a 'repeating' tester and add it to
+        // the page since its test text has a nice welcome message.
+        var initialTester = new TesterModel(testerPresets.repeating);
+        testers.push(initialTester);
       }
       this.listenTo(testers, 'add', this.addOne);
       
