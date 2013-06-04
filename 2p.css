@@ -131,6 +131,10 @@ header h1, header h2, header h3, header h4 {
   background-color: #444;
 }
 
+#main article.tester form.highlighted {
+  border: 3px double red;
+}
+
 #main article.tester form input, article.tester form textarea {
   border: gray 1px solid;
 }
@@ -142,14 +146,17 @@ header h1, header h2, header h3, header h4 {
   top: -.25em;
 }
 
-.buttons div {
+.buttons div, .buttons a:link, .buttons a:visited {
+  display: block;
   line-height: 1.2em;
   float: left;
   padding: 0 .25em;
   background-color: #666;
+  text-decoration: none;
+  color: white;
 }
 
-.buttons div:hover {
+.buttons div:hover, .buttons a:hover {
   cursor: pointer;
   color: black;
   background-color: white;

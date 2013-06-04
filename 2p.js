@@ -32,6 +32,7 @@ $(document).ready(function() {
         'order': order_id,
         'pattern': '',
         'testText': '',
+        'hash': '',
       };
     },
     'matches': null,
@@ -68,7 +69,7 @@ $(document).ready(function() {
   var TesterCollection = Backbone.Collection.extend({
     'model': TesterModel,
     'nextOrderVal': function () {
-      return this.length ? this.last().get('id') + 1 : 0;
+      return this.length ? this.last().id + 1 : 0;
     },
     'localStorage': new Backbone.LocalStorage('2problems-dot-com')
   })
@@ -92,6 +93,9 @@ $(document).ready(function() {
       this.$el.attr({'id': 'tester-' + this.model.id, 'class': 'tester'});
       if (this.model.get('pattern') !== undefined) {
         this.sendPattern();
+      }
+      if (this.model.get('isHighlighted')) {
+        $('form', this.$el).addClass('highlighted');
       }
       this.$el.slideDown();
       return this;
@@ -126,7 +130,9 @@ $(document).ready(function() {
       // to the model and trying to complile it are two seperate operations, as
       // we actually want to do the latter without doing the former when
       // instantiatng from localStorage.
-      var patternText = $('.pattern', this.$el).val();
+      var patternText = $('.pattern', this.$el).val(),
+        haystackText = $('.haystack', this.$el).val(),
+        hashUrl = '';
       this.model.set('pattern', patternText);
       if (!patternText || !this.model.compilePattern(patternText)) {
         // We don't have a pattern to compile, or compilation failed. Skip
@@ -134,6 +140,7 @@ $(document).ready(function() {
         // will show an error if necessary.
         this.model.save({'pattern': patternText});
         this.renderMatches();
+        $('a.hash', this.$el).hide();
       }
       else {
         // Send the haystack. Subsequently, the matches will be show in the
@@ -147,14 +154,26 @@ $(document).ready(function() {
       this.model.executePattern(haystack);
       this.renderMatches();
       this.model.save({'testText': haystack});
+      this.setHash();
     },
     'cloneSelf': function() {
       var tester = new TesterModel({'pattern': this.model.get('pattern'), 'testText': this.model.get('testText')});
-      testers.push(tester);
+      testers.add(tester, {'at': this.model.id});
     },
     'closeSelf': function() {
       this.model.destroy();
       this.$el.slideUp();
+    },
+    'setHash': function() {
+      var patternText = this.model.get('pattern'),
+        haystackText = this.model.get('testText'),
+        hashUrl = document.location.protocol + '//' + document.location.hostname + document.location.pathname + '#' + escape(patternText + patternText.charAt(0) + haystackText);
+      if (hashUrl.length < 2083) {
+        $('a.hash', this.$el).show().attr({'href': hashUrl});
+      }
+      else {
+        $('a.hash', this.$el).hide();
+      }
     }
   });
 
@@ -165,6 +184,21 @@ $(document).ready(function() {
       'click footer input#add': 'addTester'
     },
     'initialize': function() {
+      var delimiter, matches;
+      // See if we can create a tester from the hash
+      // A hash will look like:
+      // #/foo/i/foobarappasdf
+      // Compiled pattern will look like:
+      // /^#(\/[^\/]+/(?:[gi]+)?)\/(.+)/
+      if (document.location.hash.length > 1) {
+        delimiter = document.location.hash.charAt(1);
+        matches = document.location.hash.match(RegExp('^#(\\' + delimiter + '[^\\' + delimiter + ']+\\' + delimiter + '(?:[gi]+)?)\\' + delimiter + '(.+)'));
+        if (matches) {
+          var testerFromHash = new TesterModel({'pattern': matches[1], 'testText': matches[2]});
+          testerFromHash.set('isHighlighted', true);
+          testers.push(testerFromHash);
+        }
+      }
       if (testers.length === 0) {
         // No testers were loaded, so create a 'repeating' tester and add it to
         // the page since its test text has a nice welcome message.
