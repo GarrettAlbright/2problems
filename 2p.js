@@ -185,12 +185,28 @@ $(document).ready(function() {
     },
     'initialize': function() {
       var delimiter, matches;
+
+      $('.toggle-about').click(function() {
+        if ($('body').hasClass('header-open')) {
+          $('body').removeClass('header-open');
+          $('header #open-about').text('About');
+          document.location.hash = '';
+        }
+        else {
+          $('body').addClass('header-open');
+          $('header #open-about').text('Close about text');          
+        }
+      });
+
+      if (document.location.hash === '#about') {
+        $('.toggle-about').eq(0).click();
+      }
       // See if we can create a tester from the hash
       // A hash will look like:
       // #/foo/i/foobarappasdf
       // Compiled pattern will look like:
       // /^#(\/[^\/]+/(?:[gi]+)?)\/(.+)/
-      if (document.location.hash.length > 1) {
+      else if (document.location.hash.length > 1) {
         delimiter = document.location.hash.charAt(1);
         matches = document.location.hash.match(RegExp('^#(\\' + delimiter + '[^\\' + delimiter + ']+\\' + delimiter + '(?:[gi]+)?)\\' + delimiter + '(.+)'));
         if (matches) {
@@ -207,16 +223,6 @@ $(document).ready(function() {
       }
       this.listenTo(testers, 'add', this.addOne);
       
-      $('.toggle-about').click(function() {
-        if ($('body').hasClass('header-open')) {
-          $('body').removeClass('header-open');
-          $('header #open-about').text('About');
-        }
-        else {
-          $('body').addClass('header-open');
-          $('header #open-about').text('Close about text');          
-        }
-      });
     },
     'render': function() {
       testers.each(function(tester) {
