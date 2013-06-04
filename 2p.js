@@ -184,7 +184,8 @@ $(document).ready(function() {
       'click footer input#add': 'addTester'
     },
     'initialize': function() {
-      var delimiter, matches;
+      var unescapedHash = unescape(document.location.hash),
+        delimiter, matches;
 
       $('.toggle-about').click(function() {
         if ($('body').hasClass('header-open')) {
@@ -206,9 +207,9 @@ $(document).ready(function() {
       // #/foo/i/foobarappasdf
       // Compiled pattern will look like:
       // /^#(\/[^\/]+/(?:[gi]+)?)\/(.+)/
-      else if (document.location.hash.length > 1) {
-        delimiter = document.location.hash.charAt(1);
-        matches = document.location.hash.match(RegExp('^#(\\' + delimiter + '[^\\' + delimiter + ']+\\' + delimiter + '(?:[gi]+)?)\\' + delimiter + '(.+)'));
+      else if (unescapedHash.length > 1) {
+        delimiter = unescapedHash.charAt(1);
+        matches = unescapedHash.match(RegExp('^#(\\' + delimiter + '[^\\' + delimiter + ']+\\' + delimiter + '(?:[gi]+)?)\\' + delimiter + '(.+)'));
         if (matches) {
           var testerFromHash = new TesterModel({'pattern': matches[1], 'testText': matches[2]});
           testerFromHash.set('isHighlighted', true);
