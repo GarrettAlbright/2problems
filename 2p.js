@@ -101,6 +101,7 @@ $(document).ready(function() {
       }
       if (this.model.get('isHighlighted')) {
         $('form', this.$el).addClass('highlighted');
+        this.model.set('isHighlighted', false);
       }
       this.$el.slideDown();
       return this;
@@ -210,10 +211,11 @@ $(document).ready(function() {
       // A hash will look like:
       // #/foo/i/foobarappasdf
       // Compiled pattern will look like:
-      // /^#(\/[^\/]+/(?:[gi]+)?)\/(.+)/
+      // /^#(\/[^\/]+/(?:[gi]+)?)\/((?:\r|\n|.)+)/
+      // (For whatever reason, [\r\n.] does not work)
       else if (unescapedHash.length > 1) {
         delimiter = unescapedHash.charAt(1);
-        matches = unescapedHash.match(new RegExp('^#(\\' + delimiter + '[^\\' + delimiter + ']+\\' + delimiter + '(?:[gi]+)?)\\' + delimiter + '(.+)'));
+        matches = unescapedHash.match(new RegExp('^#(\\' + delimiter + '[^\\' + delimiter + ']+\\' + delimiter + '(?:[gi]+)?)\\' + delimiter + '((?:\r|\n|.)+)'));
         if (matches) {
           initialTester = new TesterModel({'pattern': matches[1], 'testText': matches[2]});
           initialTester.set('isHighlighted', true);
