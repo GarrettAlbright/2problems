@@ -1,3 +1,6 @@
+/*jslint browser: true, nomen: true, white: true, indent: 2 */
+/*global $, Backbone, _, escape, unescape */
+
 var testerPresets = {
   'blank': {},
   'email': {
@@ -19,10 +22,10 @@ var testerPresets = {
     'pattern': '/(\\w)(\\1+)/g',
     'testText': "Welcome to 2problems.com, the friendly JavaScript-powered regular expression tester! Now you have two problems…\n\nRegular expressions are a powerful tool for programmers for finding bits of text inside of other text. For example, the pattern in the field above finds sequences of two or more repeated letters that appear in this text. (If you aren't a programmer, you probably won't find regular expressions, or this site, very useful.) Isn't it cooooooooooool? :)\n\nTo test an expression of your own, change the pattern in the field above, or use the \"New tester\" menu below to add a new tester to the page. For more info about 2problems.com, click the \"About\" link in the sidebar to the right."
   }
-}
+};
 
 $(document).ready(function() {
-
+  'use strict';
   // Tester model.
   var TesterModel = Backbone.Model.extend({
     'defaults': function() {
@@ -32,7 +35,7 @@ $(document).ready(function() {
         'order': order_id,
         'pattern': '',
         'testText': '',
-        'hash': '',
+        'hash': ''
       };
     },
     'matches': null,
@@ -63,23 +66,25 @@ $(document).ready(function() {
     'executePattern': function(haystack) {
       this.matches = haystack.match(this.compiledPattern);
     }
-  });
-  
-  // Collection of testers.
-  var TesterCollection = Backbone.Collection.extend({
-    'model': TesterModel,
-    'nextOrderVal': function () {
-      return this.length ? this.last().id + 1 : 0;
-    },
-    'localStorage': new Backbone.LocalStorage('2problems-dot-com')
-  })
-  
-  // Instantiate a collection.
-  var testers = new TesterCollection;
+  }),
+
+    // Collection of testers.
+    TesterCollection = Backbone.Collection.extend({
+      'model': TesterModel,
+      'nextOrderVal': function () {
+        return this.length ? this.last().id + 1 : 0;
+      },
+      'localStorage': new Backbone.LocalStorage('2problems-dot-com')
+    }),
+
+    // Instantiate a collection.
+    testers = new TesterCollection(),
+    TesterView, TwoPView, TwoProblems;
+
   testers.fetch();
-  
+
   // View for testers. Uses a "template" in the HTML.
-  var TesterView = Backbone.View.extend({
+  TesterView = Backbone.View.extend({
     'tagName': 'article',
     'template': _.template($('#tester-t').html()),
     'events': {
@@ -102,7 +107,8 @@ $(document).ready(function() {
     },
     'renderMatches': function() {
       var results = this.model.matches,
-        $resultsRegion = $('.results', this.$el);
+        $resultsRegion = $('.results', this.$el),
+        $results;
       // Remove things in the results region that aren't the header.
       $(':not(h2)', $resultsRegion).remove();
       // Don't put anything in the region if the pattern field is just an empty
@@ -111,13 +117,13 @@ $(document).ready(function() {
         // Note that String.match() returns null instead of just an empty array
         // in the case of no matches.
         if (this.model.compiledPattern === null) {
-          var $results = $('<div>').addClass('error').text('(invalid pattern)');
+          $results = $('<div>').addClass('error').text('(invalid pattern)');
         }
         else if (results === null) {
-          var $results = $('<div>').text('(no matches)');
+          $results = $('<div>').text('(no matches)');
         }
         else {
-          var $results = $('<ol>');
+          $results = $('<ol>');
           _.each(results, function(result) {
             $results.append($('<li>').text(result));
           });
@@ -130,9 +136,7 @@ $(document).ready(function() {
       // to the model and trying to complile it are two seperate operations, as
       // we actually want to do the latter without doing the former when
       // instantiatng from localStorage.
-      var patternText = $('.pattern', this.$el).val(),
-        haystackText = $('.haystack', this.$el).val(),
-        hashUrl = '';
+      var patternText = $('.pattern', this.$el).val();
       this.model.set('pattern', patternText);
       if (!patternText || !this.model.compilePattern(patternText)) {
         // We don't have a pattern to compile, or compilation failed. Skip
@@ -178,14 +182,14 @@ $(document).ready(function() {
   });
 
   // The "app" view.
-  var TwoPView = Backbone.View.extend({
+  TwoPView = Backbone.View.extend({
     'el': $('#main'),
     'events': {
       'click footer input#add': 'addTester'
     },
     'initialize': function() {
       var unescapedHash = unescape(document.location.hash),
-        delimiter, matches;
+        delimiter, matches, initialTester;
 
       $('.toggle-about').click(function() {
         if ($('body').hasClass('header-open')) {
@@ -195,7 +199,7 @@ $(document).ready(function() {
         }
         else {
           $('body').addClass('header-open');
-          $('header #open-about').text('Close about text');          
+          $('header #open-about').text('Close about text');
         }
       });
 
@@ -209,36 +213,36 @@ $(document).ready(function() {
       // /^#(\/[^\/]+/(?:[gi]+)?)\/(.+)/
       else if (unescapedHash.length > 1) {
         delimiter = unescapedHash.charAt(1);
-        matches = unescapedHash.match(RegExp('^#(\\' + delimiter + '[^\\' + delimiter + ']+\\' + delimiter + '(?:[gi]+)?)\\' + delimiter + '(.+)'));
+        matches = unescapedHash.match(new RegExp('^#(\\' + delimiter + '[^\\' + delimiter + ']+\\' + delimiter + '(?:[gi]+)?)\\' + delimiter + '(.+)'));
         if (matches) {
-          var testerFromHash = new TesterModel({'pattern': matches[1], 'testText': matches[2]});
-          testerFromHash.set('isHighlighted', true);
-          testers.push(testerFromHash);
+          initialTester = new TesterModel({'pattern': matches[1], 'testText': matches[2]});
+          initialTester.set('isHighlighted', true);
+          testers.push(initialTester);
         }
       }
       if (testers.length === 0) {
         // No testers were loaded, so create a 'repeating' tester and add it to
         // the page since its test text has a nice welcome message.
-        var initialTester = new TesterModel(testerPresets.repeating);
+        initialTester = new TesterModel(testerPresets.repeating);
         testers.push(initialTester);
       }
       this.listenTo(testers, 'add', this.addOne);
-      
+
     },
     'render': function() {
       testers.each(function(tester) {
         var view = new TesterView({'model': tester});
         // "This" is the window…?
-        this.$('#main footer').before(view.render().el);
+        $('#main footer').before(view.render().el);
       });
       // Remove the "No JS" warning.
-      this.$('#third-problem').remove();
+      $('#third-problem').remove();
       // Show the footer.
-      this.$('footer').show();
+      $('footer').show();
     },
     'addOne': function(tester) {
       var view = new TesterView({'model': tester});
-      this.$('footer').before(view.render().el);
+      $('footer').before(view.render().el);
     },
     'addTester': function() {
       var testerPresetName = this.$('footer select#new-type').val(),
@@ -246,8 +250,8 @@ $(document).ready(function() {
       testers.push(newTester);
     }
   });
-  
-  var TwoProblems = new TwoPView;
+
+  TwoProblems = new TwoPView();
   TwoProblems.render();
 
 });
