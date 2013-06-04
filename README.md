@@ -11,9 +11,6 @@ code for the earlier version is
 [available here](https://bitbucket.org/garrettalbright/2problems.com), but is of
 lesser quality.
 
-(Note that, as of this writing, 2problems.com is still using the older codebase.
-If all goes well, this paragraph will be removed from this document soon.)
-
 2problems' code has the following dependencies;
 
 * [jQuery](http://jquery.com/), because jQuery is.
